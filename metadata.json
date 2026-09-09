@@ -1,0 +1,6 @@
+{
+  "name": "Aplicación de Catálogo y Compras",
+  "description": "Aplicación interactiva con navegación entre pantallas: explorar productos, detalle interactivo, carrito de compras, lista de deseos y seguimiento de pedidos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
