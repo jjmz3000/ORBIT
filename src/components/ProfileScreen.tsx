@@ -10,7 +10,10 @@ import {
   Download,
   ShieldCheck,
   LogOut,
+  MessageCircle,
+  Mail,
 } from 'lucide-react';
+import { openWhatsAppNotification, sendOrderEmailNotification } from '../services/notifications.service';
 
 interface ProfileScreenProps {
   orders: Order[];
@@ -288,7 +291,37 @@ export const ProfileScreen = ({
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                      <button
+                        onClick={() => {
+                          openWhatsAppNotification(order);
+                          onShowToast('WhatsApp abierto', 'Cargando resumen del pedido en WhatsApp.');
+                        }}
+                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-semibold px-2 py-1 rounded-md hover:bg-emerald-50 transition-colors"
+                        title="Compartir o recibir por WhatsApp"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        <span>WhatsApp</span>
+                      </button>
+
+                      <button
+                        onClick={async () => {
+                          const targetEmail = order.shippingAddress.email || userEmail;
+                          onShowToast('Enviando...', 'Reenviando confirmación con Resend.');
+                          const res = await sendOrderEmailNotification(order, targetEmail);
+                          if (res.success) {
+                            onShowToast('Correo enviado', res.message || 'Confirmación reenviada.');
+                          } else {
+                            onShowToast('Aviso', res.error || 'No se pudo enviar el correo.');
+                          }
+                        }}
+                        className="inline-flex items-center gap-1 text-zinc-600 hover:text-zinc-900 font-medium px-2 py-1 rounded-md hover:bg-zinc-100 transition-colors"
+                        title="Reenviar confirmación por correo electrónico"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>Reenviar Email</span>
+                      </button>
+
                       <button
                         onClick={() =>
                           onShowToast(
@@ -296,12 +329,13 @@ export const ProfileScreen = ({
                             `Factura electrónica para el pedido ${order.id} generada.`
                           )
                         }
-                        className="inline-flex items-center gap-1 text-zinc-600 hover:text-zinc-900 font-medium"
+                        className="inline-flex items-center gap-1 text-zinc-600 hover:text-zinc-900 font-medium px-2 py-1 rounded-md hover:bg-zinc-100 transition-colors"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Factura</span>
                       </button>
-                      <span className="font-bold text-sm text-zinc-900">
+
+                      <span className="font-bold text-sm text-zinc-900 pl-1">
                         Total: {order.total.toFixed(2)}€
                       </span>
                     </div>

@@ -57,6 +57,7 @@ export interface Order {
     city: string;
     postalCode: string;
     phone: string;
+    email?: string;
   };
 }
 

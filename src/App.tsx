@@ -11,6 +11,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { CheckoutModal } from './components/CheckoutModal';
 import { ToastContainer } from './components/Toast';
 import { AuthScreen } from './components/AuthScreen';
+import { ResetPasswordScreen } from './components/ResetPasswordScreen';
 import { Wifi, Battery, Signal, Sparkles, Loader2 } from 'lucide-react';
 import { useAuth } from './hooks/useAuth';
 import { getProducts } from './services/products.service';
@@ -21,7 +22,7 @@ import { signOut, getProfile } from './services/auth.service';
 import type { Database } from './types/database.types';
 
 export default function App() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, passwordRecovery, clearPasswordRecovery } = useAuth();
 
   // Screen and Product Navigation
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
@@ -352,6 +353,10 @@ export default function App() {
     );
   }
 
+  if (passwordRecovery) {
+    return <ResetPasswordScreen onDone={clearPasswordRecovery} />;
+  }
+
   if (!user) {
     return <AuthScreen />;
   }
@@ -545,6 +550,7 @@ export default function App() {
         shipping={shippingCost}
         total={total}
         defaultAddress={profile?.default_address ?? undefined}
+        userEmail={user?.email || undefined}
         onSubmitOrder={handleSubmitOrder}
         onViewOrders={() => {
           setIsCheckoutOpen(false);

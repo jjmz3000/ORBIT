@@ -22,6 +22,7 @@ export interface Address {
   city: string;
   postalCode: string;
   phone: string;
+  email?: string;
 }
 
 export type OrderStatus = 'confirmado' | 'en_preparacion' | 'en_camino' | 'entregado';
@@ -191,6 +192,50 @@ export interface Database {
             referencedRelation: 'products';
             referencedColumns: ['id'];
           },
+        ];
+      };
+      order_notifications: {
+        Row: {
+          id: string;
+          order_id: string;
+          channel: 'email' | 'whatsapp';
+          recipient: string;
+          status: 'pending' | 'sent' | 'failed';
+          provider_id: string | null;
+          payload: Json | null;
+          error_message: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          channel: 'email' | 'whatsapp';
+          recipient: string;
+          status?: 'pending' | 'sent' | 'failed';
+          provider_id?: string | null;
+          payload?: Json | null;
+          error_message?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<{
+          id: string;
+          order_id: string;
+          channel: 'email' | 'whatsapp';
+          recipient: string;
+          status: 'pending' | 'sent' | 'failed';
+          provider_id: string | null;
+          payload: Json | null;
+          error_message: string | null;
+          created_at: string;
+        }>;
+        Relationships: [
+          {
+            foreignKeyName: 'order_notifications_order_id_fkey';
+            columns: ['order_id'];
+            isOneToOne: false;
+            referencedRelation: 'orders';
+            referencedColumns: ['id'];
+          }
         ];
       };
     };
